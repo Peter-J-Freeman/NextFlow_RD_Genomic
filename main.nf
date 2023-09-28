@@ -3,18 +3,13 @@ System.setProperty("org.gradle.native", "true")
 System.setProperty("org.gradle.console", "plain")
 
 // Define project parameters
-params.reads = "$projectDir/data/samples/NA12878_WES_R{1,2}.fastq"
+params.reads = "$projectDir/data/samples/SRR1518253_{1,2}.fastq"
 params.genome_file = "$projectDir/data/genome/hg38_v0_Homo_sapiens_assembly38.fasta"
 params.genome_index_files = "$projectDir/data/genome/*.fasta.*"
 params.indexDir = "$projectDir/data/genome"
-params.multiqc = "$projectDir/multiqc"
 params.outdir = "$projectDir/files"
 params.resDir = "$projectDir/results"
-params.logDir = "$projectDir/logs"
 params.fractions = [0.001, 0.005, 0.01, 0.05, 0.1, 0.5]
-
-// Set up log directory
-logDir params.logDir
 
 // Print pipeline configuration
 log.info """\
@@ -24,7 +19,6 @@ log.info """\
     reads           : ${params.reads}
     downsample      : ${params.fractions}
     output_directory: ${params.outdir}
-    multiqc         : ${params.multiqc}
     results         : ${params.resDir}
 """.stripIndent()
 
@@ -198,10 +192,12 @@ process downsampleBam {
     fractions=(${params.fractions.join(' ')})
     for fraction in "\${fractions[@]}"; do
         outputBam="${bamFile.baseName}_downsampled_\${fraction//./}.bam"
-        picard DownsampleSam I=${bamFile} O="\${outputBam}" P="\${fraction}"
-        mv "\${outputBam}" "\${outputBam}"
+        picard DownsampleSam I=${bamFile} O="\${outputBam}" P="\${fraction}" QUIET=true VALIDATION_STRINGENCY=SILENT > "\${outputBam}.log" 2>&1
+        # mv "\${outputBam}" "\${outputBam}"
     done
-    mv ${bamFile} ${bamFile.baseName}_downsampled_100.bam
+    if [ -e "${bamFile}" ]; then
+        mv "${bamFile}" "${bamFile.baseName}_downsampled_100.bam"
+    fi
     echo "Downsampling complete"
     """
 }

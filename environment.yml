@@ -6,6 +6,5 @@ channels:
 dependencies:
   - python=3.10
   - gatk4==4.3.0.0
-  - picard==2.27.5
   - nextflow==23.04.1
   - rtg-tools==3.12.1

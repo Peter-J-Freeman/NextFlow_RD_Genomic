@@ -1,28 +1,38 @@
 # Running the project in a docker container
 
-To build and run the Docker container, follow these steps:
+# To build and run the Docker container
 
-- Open a terminal and navigate to the directory where the docker-compose and Dockerfile are saved.
+follow these steps:
+
+- Open a terminal and navigate to the directory where the Dockerfile is located.
 - Build the Docker image by running the following command: 
 ```
-$ docker-compose build
+$ docker build -t nextflow-genomic .
 ```
 
-Access the container's Bash shell by running the following command
-
+Run the container with the following command
 ```
-$ docker-compose up -d
-$ docker-compose exec nextflow-genomic bash
+$  docker run -it -d -v "$(pwd):/home" --name nextflow-genomic nextflow-genomic
 ```
 
-Initialise conda
-
+If you get a name conflict error, run this command before re-running the container
 ```bash
-$ conda init bash
-$ source ~/.bashrc
+docker stop nextflow-genomic  
 ```
 
-Activate the environment
+Run NextFlow in the container
 ```bash
-$ conda activate snakemake-tutorial
+$ docker exec -it nextflow-genomic nextflow run main.nf  
+```
+
+## Enter the container as a bash user
+```bash
+docker exec -it nextflow-genomic bash
+```
+
+## Making changes to to container *e.g.,* adding new software
+
+Rebuild using:
+```
+$ docker build --no-cache -t nextflow-genomic .
 ```

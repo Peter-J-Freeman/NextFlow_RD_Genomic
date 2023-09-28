@@ -1,35 +1,34 @@
-# Use the Miniconda base image
+# Use the continuumio/miniconda3 base image
 FROM continuumio/miniconda3:23.3.1-0
 
-# Update the package list and install necessary packages using apt-get
-# Note: I'm running a mac M1 and these packages do not seem to be available
-# for ARM via conda, so using apt-get to install
+# Update the package list and install necessary packages using apt
+# Note: I'm running a Mac M1, and these packages do not seem to be available
+# for ARM via conda, so using apt to install
 RUN apt update && apt install -y \
-    bwa\
+    bwa \
     bcftools \
     samtools \
+    libxcb-xinerama0 \
     wget
-# Set the working directory to /app
-WORKDIR /app
 
-# Copy the current directory contents into the container's /app directory
-COPY environment.yml /app
-COPY *.nf /app
-COPY nextflow.config /app
-COPY requirements.txt /app
-
-# Create the Conda environment
-RUN conda env create -f environment.yml
+# Create the Conda environment and install dependencies
 RUN conda init bash
+RUN echo "conda activate base" > ~/.bashrc
 
-# Updrade pip
-RUN pip install --upgrade pip
+# Specify Conda channels
+RUN conda config --add channels bioconda
+RUN conda config --add channels conda-forge
 
-# Install any needed packages specified in requirements.txt
-RUN pip install -r requirements.txt
+# Install Conda packages
+RUN conda install -y \
+    python=3.10 \
+    gatk4==4.3.0.0 \
+    nextflow==23.04.1 \
+    rtg-tools==3.12.1 \
+    fastqc==0.12.1 \
+    picard
 
-# Activate the Conda environment
-RUN echo "conda activate $(head -1 environment.yml | cut -d' ' -f2)" > ~/.bashrc
-
-# Set the entry point to bash
-CMD ["bash"]
+# Set entrypoint
+WORKDIR /home
+ENTRYPOINT []
+CMD ["tail", "-f", "/dev/null"]
