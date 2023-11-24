@@ -22,8 +22,9 @@ $ wget https://storage.googleapis.com/gcp-public-data--broad-references/hg38/v0/
 - FastQ sample (for workflow development)
 ```bash
 $ cd ../samples
-$ wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR151/003/SRR1518253/SRR1518253_1.fastq.gz
-$ wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR151/003/SRR1518253/SRR1518253_2.fastq.gz
+$ wget https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR151/003/SRR1518253/SRR1518253_1.fastq.gz
+$ wget https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR151/003/SRR1518253/SRR1518253_2.fastq.gz
+$ gunzip *.gz
 ```
 - When scaling up, FastQ samples
 ```bash

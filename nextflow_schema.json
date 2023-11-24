@@ -1,0 +1,264 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/Peter-J-Freeman/NextFlow_RD_Genomic/main/nextflow_schema.json",
+  "title": "NextFlow_RD_Genomic",
+  "description": "This pipeline uses Nextflow to process a simple germline genomics pipeline. The JSON Schema was built using the nf-core pipeline schema builder.",
+  "version": "1.0",
+  "author": "Peter J Freeman",
+  "documentation": "https://github.com/Peter-J-Freeman/NextFlow_RD_Genomic#readme",
+  "license": "GNU Affero General Public License v3.0",
+  "repository": "https://github.com/Peter-J-Freeman/NextFlow_RD_Genomic",
+  "type": "object",
+  "properties": {
+    "container": {
+        "type": "string",
+        "enum": ["nextflow/nextflow"]
+    },
+    "processes": {
+      "type": "object",
+      "properties": {
+        "indexGenome": {
+          "type": "object",
+          "properties": {
+            "container": {
+              "type": "string",
+              "enum": ["variantvalidator/indexgenome:1.1.0"]
+            },
+            "input": {
+              "type": "object",
+              "properties": {
+                "genomeFasta": { "type": "string" },
+                "indexFiles": { "type": "string" }
+              },
+              "required": ["genomeFasta", "indexFiles"]
+            },
+            "output": {
+              "type": "object",
+              "properties": {
+                "amb": { "type": "string" },
+                "ann": { "type": "string" },
+                "bwt": { "type": "string" },
+                "pac": { "type": "string" },
+                "sa": { "type": "string" },
+                "fai": { "type": "string" },
+                "dict": { "type": "string" }
+              },
+              "required": ["amb", "ann", "bwt", "pac", "sa", "fai", "dict"]
+            },
+            "script": { "type": "string" }
+          },
+          "required": ["container", "input", "output", "script"]
+        },
+        "FASTQC": {
+          "type": "object",
+          "properties": {
+            "container": {
+              "type": "string",
+              "enum": ["staphb/fastqc"]
+            },
+            "tag": { "type": "string" },
+            "outputDir": { "type": "string" },
+            "input": {
+              "type": "object",
+              "properties": {
+                "sample_id": { "type": "string" },
+                "reads": { "type": "string" }
+              },
+              "required": ["sample_id", "reads"]
+            },
+            "output": {
+              "type": "object",
+              "properties": {
+                "logs": { "type": "string" }
+              },
+              "required": ["logs"]
+            },
+            "script": { "type": "string" }
+          },
+          "required": ["container", "tag", "outputDir", "input", "output", "script"]
+        },
+        "alignReads": {
+          "type": "object",
+          "properties": {
+            "container": {
+              "type": "string",
+              "enum": ["variantvalidator/indexgenome:1.1.0"]
+            },
+            "input": {
+              "type": "object",
+              "properties": {
+                "sample_id": { "type": "string" },
+                "reads": { "type": "string" }
+              },
+              "required": ["sample_id", "reads"]
+            },
+            "output": {
+              "type": "object",
+              "properties": {
+                "bamFile": { "type": "string" }
+              },
+              "required": ["bamFile"]
+            },
+            "script": { "type": "string" }
+          },
+          "required": ["container", "input", "output", "script"]
+        },
+        "downsampleBam": {
+          "type": "object",
+          "properties": {
+            "container": {
+              "type": "string",
+              "enum": ["variantvalidator/indexgenome:1.1.0"]
+            },
+            "input": {
+              "type": "object",
+              "properties": {
+                "bamFile": { "type": "string" }
+              },
+              "required": ["bamFile"]
+            },
+            "output": {
+              "type": "object",
+              "properties": {
+                "fraction": { "type": "string" }
+              },
+              "required": ["fraction"]
+            },
+            "script": { "type": "string" }
+          },
+          "required": ["container", "input", "output", "script"]
+        },
+        "sortBam": {
+          "type": "object",
+          "properties": {
+            "container": {
+              "type": "string",
+              "enum": ["variantvalidator/indexgenome:1.1.0"]
+            },
+            "input": {
+              "type": "object",
+              "properties": {
+                "sample_id": { "type": "string" },
+                "bamFiles": { "type": "string" }
+              },
+              "required": ["sample_id", "bamFiles"]
+            },
+            "output": {
+              "type": "object",
+              "properties": {
+                "sortedBamFiles": { "type": "string" }
+              },
+              "required": ["sortedBamFiles"]
+            },
+            "script": { "type": "string" }
+          },
+          "required": ["container", "input", "output", "script"]
+        },
+        "markDuplicates": {
+          "type": "object",
+          "properties": {
+            "container": {
+              "type": "string",
+              "enum": ["variantvalidator/indexgenome:1.1.0"]
+            },
+            "input": {
+              "type": "object",
+              "properties": {
+                "sample_id": { "type": "string" },
+                "bamFiles": { "type": "string" }
+              },
+              "required": ["sample_id", "bamFiles"]
+            },
+            "output": {
+              "type": "object",
+              "properties": {
+                "deduplicatedBamFiles": { "type": "string" }
+              },
+              "required": ["deduplicatedBamFiles"]
+            },
+            "script": { "type": "string" }
+          },
+          "required": ["container", "input", "output", "script"]
+        },
+        "indexBam": {
+          "type": "object",
+          "properties": {
+            "container": {
+              "type": "string",
+              "enum": ["variantvalidator/indexgenome:1.1.0"]
+            },
+            "input": {
+              "type": "object",
+              "properties": {
+                "sample_id": { "type": "string" },
+                "bamFiles": { "type": "string" }
+              },
+              "required": ["sample_id", "bamFiles"]
+            },
+            "output": {
+              "type": "object",
+              "properties": {
+                "indexedBamFiles": { "type": "string" }
+              },
+              "required": ["indexedBamFiles"]
+            },
+            "script": { "type": "string" }
+          },
+          "required": ["container", "input", "output", "script"]
+        },
+        "haplotypeCaller": {
+          "type": "object",
+          "properties": {
+            "container": {
+              "type": "string",
+              "enum": ["variantvalidator/gatk4:4.3.0.0"]
+            },
+            "input": {
+              "type": "object",
+              "properties": {
+                "sample_id": { "type": "string" },
+                "bamFiles": { "type": "string" }
+              },
+              "required": ["sample_id", "bamFiles"]
+            },
+            "output": {
+              "type": "object",
+              "properties": {
+                "vcfFiles": { "type": "string" }
+              },
+              "required": ["vcfFiles"]
+            },
+            "script": { "type": "string" }
+          },
+          "required": ["container", "input", "output", "script"]
+        },
+        "filterVCF": {
+          "type": "object",
+          "properties": {
+            "container": {
+              "type": "string",
+              "enum": ["variantvalidator/gatk4:4.3.0.0"]
+            },
+            "input": {
+              "type": "object",
+              "properties": {
+                "sample_id": { "type": "string" },
+                "vcfFiles": { "type": "string" }
+              },
+              "required": ["sample_id", "vcfFiles"]
+            },
+            "output": {
+              "type": "object",
+              "properties": {
+                "filteredVCFFiles": { "type": "string" }
+              },
+              "required": ["filteredVCFFiles"]
+            },
+            "script": { "type": "string" }
+          },
+          "required": ["container", "input", "output", "script"]
+        }
+      }
+    }
+  }
+}

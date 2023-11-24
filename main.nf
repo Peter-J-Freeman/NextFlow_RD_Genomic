@@ -4,7 +4,7 @@ System.setProperty("org.gradle.console", "plain")
 
 // Define project parameters
 params.reads = "$projectDir/data/samples/SRR1518253_{1,2}.fastq"
-params.genome_file = "$projectDir/data/genome/hg38_v0_Homo_sapiens_assembly38.fasta"
+params.genome_file = "$projectDir/data/genome/Homo_sapiens_assembly38.fasta"
 params.genome_index_files = "$projectDir/data/genome/*.fasta.*"
 params.indexDir = "$projectDir/data/genome"
 params.outdir = "$projectDir/files"
@@ -26,7 +26,9 @@ log.info """\
  * Define the indexGenome process that creates a BWA index
  * given the genome fasta file
  */
-process indexGenome {
+process indexGenome{
+
+    container = 'variantvalidator/indexgenome:1.1.0'
 
     // Publish indexed files to the specified directory
     publishDir(params.indexDir, mode: "copy")
@@ -101,6 +103,8 @@ process indexGenome {
  * Run fastq on the read fastq files
  */
 process FASTQC {
+    container = 'staphb/fastqc'
+
     // Add a tag to identify the process
     tag "FASTQC on $sample_id"
 
@@ -126,6 +130,8 @@ process FASTQC {
  * Align reads to the indexed genome
  */
 process alignReads {
+
+    container = 'variantvalidator/indexgenome:1.1.0'
 
     // Input channels: sample_id
     input:
@@ -180,6 +186,8 @@ process alignReads {
  */
 process downsampleBam {
 
+    container = 'variantvalidator/indexgenome:1.1.0'
+
     input:
     file bamFile
 
@@ -193,7 +201,6 @@ process downsampleBam {
     for fraction in "\${fractions[@]}"; do
         outputBam="${bamFile.baseName}_downsampled_\${fraction//./}.bam"
         picard DownsampleSam I=${bamFile} O="\${outputBam}" P="\${fraction}" QUIET=true VALIDATION_STRINGENCY=SILENT > "\${outputBam}.log" 2>&1
-        # mv "\${outputBam}" "\${outputBam}"
     done
     if [ -e "${bamFile}" ]; then
         mv "${bamFile}" "${bamFile.baseName}_downsampled_100.bam"
@@ -206,6 +213,8 @@ process downsampleBam {
  * Sort the BAM files
  */
 process sortBam {
+
+    container = 'variantvalidator/indexgenome:1.1.0'
 
     input:
     tuple val(sample_id), file(bamFiles)
@@ -235,6 +244,8 @@ process sortBam {
  * Mark duplicates in BAM files
  */
 process markDuplicates {
+
+    container = 'variantvalidator/indexgenome:1.1.0'
 
     // Publish deduplicated BAM files to the specified directory
     publishDir(params.outdir, mode: "copy")
@@ -270,6 +281,8 @@ process markDuplicates {
  */
 process indexBam {
 
+    container = 'variantvalidator/indexgenome:1.1.0'
+
     // Publish indexed BAM files to the specified directory
     publishDir(params.outdir, mode: "copy")
 
@@ -301,6 +314,8 @@ process indexBam {
  * Call variants using HaplotypeCaller
  */
 process haplotypeCaller {
+
+    container = 'variantvalidator/gatk4:4.3.0.0'
 
     input:
     tuple val(sample_id), file(bamFiles)
@@ -346,6 +361,8 @@ process haplotypeCaller {
  * Filter the raw VCF files using GATK VariantFiltration
  */
 process filterVCF {
+
+    container = 'variantvalidator/gatk4:4.3.0.0'
 
     // Publish VCF files to the specified directory
     publishDir(params.resDir, mode: "copy")
