@@ -6,8 +6,8 @@ log.info """\
     ============================================
             Simple DNASeq Pipeline Configuration
     ============================================
-    samplesheet     : ${params.samplesheet}
     reads           : ${params.reads}
+    samplesheet     : ${params.samplesheet}
     genome          : ${params.genome_file}
     genome index    : ${params.genome_index_files}
     index directory : ${params.indexDir}
@@ -29,20 +29,7 @@ include { filterVCF } from './modules/filterVCF.nf'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    INPUT CHANNELS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-    samplesheet_ch = Channel
-        .fromPath(params.samplesheet)
-        .splitCsv(sep: '\t')
-        .map { row -> tuple(row[0], row[1], row[2]) }
-
-    samplesheet_ch.view()
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    MAIN WORKFLOW
+    WORKFLOW
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
@@ -61,7 +48,17 @@ workflow {
     indexed_genome_ch = indexGenome(genome_ch, genome_index_ch)
 
     // Set channel to gather read_pairs
-    read_pairs_ch = Channel.fromFilePairs(params.reads, checkIfExists: true)
+    // read_pairs_ch = Channel.fromFilePairs(params.reads, checkIfExists: true)
+    // read_pairs_ch.view()
+
+
+    // Set channel to gather read_pairs
+    read_pairs_ch = Channel
+        .fromPath(params.samplesheet)
+        .splitCsv(sep: '\t')
+        .map { row -> tuple(row[0], [row[1], row[2]]) }
+
+    read_pairs_ch.view()
 
     // Run FASTQC on read pairs
     FASTQC(read_pairs_ch)
