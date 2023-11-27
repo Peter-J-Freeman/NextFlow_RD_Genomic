@@ -1,25 +1,19 @@
-// Disable buffering for stdout and stderr
-System.setProperty("org.gradle.native", "true")
-System.setProperty("org.gradle.console", "plain")
-
-// Define project parameters
-params.reads = "$projectDir/data/samples/SRR1518253_{1,2}.fastq"
-params.genome_file = "$projectDir/data/genome/Homo_sapiens_assembly38.fasta"
-params.genome_index_files = "$projectDir/data/genome/*.fasta.*"
-params.indexDir = "$projectDir/data/genome"
-params.outdir = "$projectDir/files"
-params.resDir = "$projectDir/results"
-params.fractions = [0.001, 0.005, 0.01, 0.05, 0.1, 0.5]
+// Use newest nextflow dsl
+nextflow.enable.dsl = 2
 
 // Print pipeline configuration
 log.info """\
-    Simple DNASeq Pipeline Without BQSR and VQSR
     ============================================
-    genome          : ${params.genome_file}
+            Simple DNASeq Pipeline Configuration
+    ============================================
+    samplesheet     : ${params.samplesheet}
     reads           : ${params.reads}
-    downsample      : ${params.fractions}
-    output_directory: ${params.outdir}
-    results         : ${params.resDir}
+    genome          : ${params.genome_file}
+    genome index    : ${params.genome_index_files}
+    index directory : ${params.indexDir}
+    output directory: ${params.outdir}
+    results directory: ${params.resDir}
+    fractions       : ${params.fractions}
 """.stripIndent()
 
 // Include modules in sequence
@@ -32,6 +26,25 @@ include { markDuplicates } from './modules/markDuplicates.nf'
 include { indexBam } from './modules/indexBam.nf'
 include { haplotypeCaller } from './modules/haplotypeCaller.nf'
 include { filterVCF } from './modules/filterVCF.nf'
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    INPUT CHANNELS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+    samplesheet_ch = Channel
+        .fromPath(params.samplesheet)
+        .splitCsv(sep: '\t')
+        .map { row -> tuple(row[0], row[1], row[2]) }
+
+    samplesheet_ch.view()
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    MAIN WORKFLOW
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
 
 workflow {
     // Set up channel for the genome fasta file including indexes if already created
@@ -73,4 +86,8 @@ workflow {
 
     // Filter Variants
     filterVCF(vcf_call_ch.collect(), genome_ch, Channel.fromPath(params.genome_index_files).collect())
+}
+
+workflow.onComplete {
+    log.info ( workflow.success ? "\nworkflow is done!\n" : "Oops .. something went wrong" )
 }
