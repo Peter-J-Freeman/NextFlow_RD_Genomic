@@ -4,7 +4,8 @@
  */
 process indexGenome{
 
-    container = 'variantvalidator/indexgenome:1.1.0'
+    label 'process_long'
+    container 'variantvalidator/indexgenome:1.1.0'
 
     // Publish indexed files to the specified directory
     publishDir(params.indexDir, mode: "copy")

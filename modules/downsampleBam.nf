@@ -3,7 +3,8 @@
  */
 process downsampleBam {
 
-    container = 'variantvalidator/indexgenome:1.1.0'
+    label 'process_single'
+    container 'variantvalidator/indexgenome:1.1.0'
 
     input:
     file bamFile

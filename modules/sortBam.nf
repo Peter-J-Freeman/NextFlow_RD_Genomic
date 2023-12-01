@@ -3,7 +3,8 @@
  */
 process sortBam {
 
-    container = 'variantvalidator/indexgenome:1.1.0'
+    label 'process_single'
+    container 'variantvalidator/indexgenome:1.1.0'
 
     input:
     tuple val(sample_id), file(bamFiles)

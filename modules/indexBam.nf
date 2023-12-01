@@ -3,7 +3,8 @@
  */
 process indexBam {
 
-    container = 'variantvalidator/indexgenome:1.1.0'
+    label 'process_single'
+    container 'variantvalidator/indexgenome:1.1.0'
 
     // Publish indexed BAM files to the specified directory
     publishDir(params.outdir, mode: "copy")

@@ -2,7 +2,9 @@
  * Run fastq on the read fastq files
  */
 process FASTQC {
-    container = 'staphb/fastqc'
+
+    label 'process_single'
+    container 'staphb/fastqc'
 
     // Add a tag to identify the process
     tag "FASTQC on $sample_id"

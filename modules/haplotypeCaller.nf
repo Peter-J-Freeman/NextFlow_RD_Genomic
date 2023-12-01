@@ -3,7 +3,8 @@
  */
 process haplotypeCaller {
 
-    container = 'variantvalidator/gatk4:4.3.0.0'
+    label 'process_medium'
+    container 'variantvalidator/gatk4:4.3.0.0'
 
     input:
     tuple val(sample_id), file(bamFiles)

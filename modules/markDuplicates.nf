@@ -3,7 +3,8 @@
  */
 process markDuplicates {
 
-    container = 'variantvalidator/indexgenome:1.1.0'
+    label 'process_single'
+    container 'variantvalidator/indexgenome:1.1.0'
 
     // Publish deduplicated BAM files to the specified directory
     publishDir(params.outdir, mode: "copy")

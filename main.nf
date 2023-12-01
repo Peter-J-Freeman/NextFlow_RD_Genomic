@@ -17,15 +17,15 @@ log.info """\
 """.stripIndent()
 
 // Include modules in sequence
-include { indexGenome } from './modules/indexGenome.nf'
-include { FASTQC } from './modules/FASTQC.nf'
-include { alignReads } from './modules/alignReads.nf'
-include { downsampleBam } from './modules/downsampleBam.nf'
-include { sortBam } from './modules/sortBam.nf'
-include { markDuplicates } from './modules/markDuplicates.nf'
-include { indexBam } from './modules/indexBam.nf'
-include { haplotypeCaller } from './modules/haplotypeCaller.nf'
-include { filterVCF } from './modules/filterVCF.nf'
+include { indexGenome } from './modules/indexGenome'
+include { FASTQC } from './modules/FASTQC'
+include { alignReads } from './modules/alignReads'
+include { downsampleBam } from './modules/downsampleBam'
+include { sortBam } from './modules/sortBam'
+include { markDuplicates } from './modules/markDuplicates'
+include { indexBam } from './modules/indexBam'
+include { haplotypeCaller } from './modules/haplotypeCaller'
+include { filterVCF } from './modules/filterVCF'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

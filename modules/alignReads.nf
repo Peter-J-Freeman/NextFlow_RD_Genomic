@@ -3,7 +3,8 @@
  */
 process alignReads {
 
-    container = 'variantvalidator/indexgenome:1.1.0'
+    label 'process_medium'
+    container 'variantvalidator/indexgenome:1.1.0'
 
     // Input channels: sample_id
     input:

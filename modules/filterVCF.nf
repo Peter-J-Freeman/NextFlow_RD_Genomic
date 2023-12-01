@@ -3,7 +3,8 @@
  */
 process filterVCF {
 
-    container = 'variantvalidator/gatk4:4.3.0.0'
+    label 'process_medium'
+    container 'variantvalidator/gatk4:4.3.0.0'
 
     // Publish VCF files to the specified directory
     publishDir(params.resDir, mode: "copy")
