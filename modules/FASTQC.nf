@@ -4,7 +4,7 @@
 process FASTQC {
 
     label 'process_single'
-    container 'staphb/fastqc'
+    container 'pegi3s/fastqc'
 
     // Add a tag to identify the process
     tag "FASTQC on $sample_id"
