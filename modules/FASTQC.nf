@@ -4,6 +4,7 @@
 process FASTQC {
 
     label 'process_single'
+
     container 'variantvalidator/fastqc:0.12.1'
 
     // Add a tag to identify the process
