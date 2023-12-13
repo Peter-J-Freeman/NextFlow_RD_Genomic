@@ -4,7 +4,7 @@
 process FASTQC {
 
     label 'process_single'
-    container 'staphb/fastqc'
+    container 'variantvalidator/fastqc:0.12.1'
 
     // Add a tag to identify the process
     tag "FASTQC on $sample_id"
