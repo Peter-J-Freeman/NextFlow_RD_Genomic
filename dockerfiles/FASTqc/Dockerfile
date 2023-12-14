@@ -16,7 +16,7 @@ RUN conda init bash && \
 LABEL maintainer="Peter J Freeman <peter.j.freeman@manchester.ac.uk>"
 
 # Metadata about the purpose or description of the image
-LABEL description="Docker image containing gatk4==4.3.0.0"
+LABEL description="Docker image containing FASTqc v0.12.1"
 
 # Default command to run when the container starts
 CMD ["/bin/bash", "-l"]
