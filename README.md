@@ -33,7 +33,11 @@ $ wget https://genomics.viapath.co.uk/benchmark/files/FASTQ/NA12878_WES.zip
 
 ## Running the pipeline
 ```bash
-$ nextflow run main.nf
+# Using Docker
+$ nextflow run -profile docker main.nf
+
+# Using docker in singularity
+$ nextflow run -profile singularity main.nf
 ```
 
 ## Validating the pipeline
