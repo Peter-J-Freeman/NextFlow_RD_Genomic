@@ -7,7 +7,7 @@ process filterVCF {
     container 'variantvalidator/gatk4:4.3.0.0'
 
     // Publish VCF files to the specified directory
-    publishDir(params.resDir, mode: "copy")
+    publishDir(params.outdir, mode: "copy")
 
     input:
     tuple val(sample_id), file(vcfFiles)

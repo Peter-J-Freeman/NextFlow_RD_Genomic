@@ -12,7 +12,6 @@ log.info """\
     genome index    : ${params.genome_index_files}
     index directory : ${params.indexDir}
     output directory: ${params.outdir}
-    results directory: ${params.resDir}
     fractions       : ${params.fractions}
 """.stripIndent()
 

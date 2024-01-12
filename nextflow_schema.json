@@ -33,18 +33,11 @@
           "format": "directory-path",
           "description": "Local path to output directory",
           "default": "./files"
-        },
-        "resDir": {
-          "type": "string",
-          "format": "directory-path",
-          "description": "Local path to Results directory",
-          "default": "./results"
         }
       },
       "required": [
         "samplesheet",
-        "outdir",
-        "resDir"
+        "outdir"
       ]
     }
   },

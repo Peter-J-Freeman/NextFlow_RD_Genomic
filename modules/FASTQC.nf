@@ -11,7 +11,7 @@ process FASTQC {
     tag "FASTQC on $sample_id"
 
     // Specify the output directory for the FASTQC results
-    publishDir(params.resDir, mode: "copy", mkdirs: true)
+    publishDir(params.outdir, mode: "copy", mkdirs: true)
 
     input:
     tuple val(sample_id), path(reads)
