@@ -5,4 +5,4 @@ channels:
   - conda-forge
 dependencies:
   - python=3.10
-  - nextflow==23.04.1
+  - nextflow==23.10.1

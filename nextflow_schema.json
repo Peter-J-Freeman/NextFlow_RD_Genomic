@@ -15,29 +15,35 @@
       "type": "object",
       "description": "Define where the pipeline should find input data and save output data.",
       "properties": {
-        "input": {
-          "title": "Inputs",
-          "type": "object",
-          "description": "Local path to stylesheet",
-          "default": "./samplesheet.tsv",
-          "properties": {
-            "samplesheet": {
+          "samplesheet": {
               "type": "string",
-              "description": "Input samplesheet in TSV format",
+              "description": "Samplesheet in tsv format",
+              "default": "samplesheet",
               "format": "file-path"
-            }
+          },
+          "genome_index_files": {
+              "type": "string",
+              "description": "Genome index files directory",
+              "format": "directory-path"
+          },
+          "genome_file": {
+              "type": "string",
+              "description": "Genome fasta file",
+              "default": "genome.fasta",
+              "format": "file-path"
+          },
+          "outdir": {
+              "type": "string",
+              "description": "local output directory",
+              "default": "./results",
+              "format": "directory-path"
           }
-        },
-        "outdir": {
-          "type": "string",
-          "format": "directory-path",
-          "description": "Local path to output directory",
-          "default": "./files"
-        }
       },
       "required": [
-        "samplesheet",
-        "outdir"
+          "samplesheet",
+          "genome_index_files",
+          "genome_file",
+          "outdir"
       ]
     }
   },
