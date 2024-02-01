@@ -4,7 +4,7 @@
  */
 process indexGenome{
 
-    label 'process_long'
+    label 'process_medium'
     container 'variantvalidator/indexgenome:1.1.0'
 
     // Publish indexed files to the specified directory
