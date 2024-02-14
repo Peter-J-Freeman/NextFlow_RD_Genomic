@@ -5,9 +5,11 @@ process sortBam {
 
     label 'process_single'
     container 'variantvalidator/indexgenome:1.1.0'
+     
+    tag "$bamFile"
 
     input:
-    tuple val(sample_id), file(bamFiles)
+    tuple val(sample_id), file(bamFile)
 
     output:
     tuple val(sample_id), file("${sample_id}_*_sorted.bam")
@@ -15,17 +17,14 @@ process sortBam {
     script:
     """
     echo "Running Sort Bam"
-    # Define an array to store the input BAM files
-    inputBams=(${bamFiles})
 
-    # Sort each input BAM file and generate sorted BAM files
-    for inputBam in "\${inputBams[@]}"; do
-        outputBam="\$(basename \${inputBam} .bam)_sorted.bam"
+    outputBam="\$(basename ${bamFile} .bam)_sorted.bam"
 
-        # Use samtools to sort the input BAM file and save the output to the sorted BAM file
-        samtools sort -o \${outputBam} \${inputBam}
-        echo "\${outputBam}"
-    done
+    # Use samtools to sort the input BAM file and save the output to the sorted BAM file
+    samtools sort -o \${outputBam} ${bamFile}
+
+    echo "\${outputBam}"
+
     echo "BAM Sorting complete"
     """
 }

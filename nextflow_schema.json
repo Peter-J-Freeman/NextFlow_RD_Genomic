@@ -1,55 +1,57 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "https://raw.githubusercontent.com/Peter-J-Freeman/NextFlow_RD_Genomic/main/nextflow_schema.json",
-  "title": "NextFlow_RD_Genomic",
-  "description": "This pipeline uses Nextflow to process a simple germline genomics pipeline. The JSON Schema was built using the nf-core pipeline schema builder.",
-  "version": "1.0",
-  "author": "Peter J Freeman",
-  "documentation": "https://github.com/Peter-J-Freeman/NextFlow_RD_Genomic#readme",
-  "license": "GNU Affero General Public License v3.0",
-  "repository": "https://github.com/Peter-J-Freeman/NextFlow_RD_Genomic",
-  "type": "object",
-  "definitions": {
-    "input_output_options": {
-      "title": "Input/output options",
-      "type": "object",
-      "description": "Define where the pipeline should find input data and save output data.",
-      "properties": {
-          "samplesheet": {
-              "type": "string",
-              "description": "Samplesheet in tsv format",
-              "default": "samplesheet",
-              "format": "file-path"
-          },
-          "genome_index_files": {
-              "type": "string",
-              "description": "Genome index files directory",
-              "format": "directory-path"
-          },
-          "genome_file": {
-              "type": "string",
-              "description": "Genome fasta file",
-              "default": "genome.fasta",
-              "format": "file-path"
-          },
-          "outdir": {
-              "type": "string",
-              "description": "local output directory",
-              "default": "./results",
-              "format": "directory-path"
-          }
-      },
-      "required": [
-          "samplesheet",
-          "genome_index_files",
-          "genome_file",
-          "outdir"
-      ]
-    }
-  },
-  "allOf": [
-    {
-      "$ref": "#/definitions/input_output_options"
-    }
-  ]
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://raw.githubusercontent.com/YOUR_PIPELINE/master/nextflow_schema.json",
+    "title": "Nextflow pipeline parameters",
+    "description": "This pipeline uses Nextflow and processes some kind of data. The JSON Schema was built using the nf-core pipeline schema builder.",
+    "type": "object",
+    "definitions": {
+        "inputs_outputs": {
+            "title": "inputs_outputs",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "samplesheet": {
+                    "type": "string",
+                    "description": "Samplesheet in tsv format",
+                    "default": "samplesheet",
+                    "format": "file-path"
+                },
+                "genome_index_files": {
+                    "type": "string",
+                    "description": "Genome index files directory",
+                    "format": "directory-path"
+                },
+                "index_genome": {
+                    "type": "boolean",
+                    "description": "Index the genome",
+                    "default": false
+                },
+                "genome_file": {
+                    "type": "string",
+                    "description": "Genome fasta file",
+                    "default": "genome.fasta",
+                    "format": "file-path"
+                },
+                "outdir": {
+                    "type": "string",
+                    "description": "local output directory",
+                    "default": "./results",
+                    "format": "directory-path"
+                }
+            },
+            "required": [
+                "samplesheet",
+                "genome_index_files",
+                "index_genome",
+                "genome_file",
+                "outdir"
+            ]
+        }
+    },
+    "allOf": [
+        {
+            "$ref": "#/definitions/inputs_outputs"
+        }
+    ]
 }
