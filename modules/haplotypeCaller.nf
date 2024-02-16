@@ -5,7 +5,7 @@ process haplotypeCaller {
 
     label 'process_medium'
     container 'variantvalidator/gatk4:4.3.0.0'
-    
+
     tag "$bamFile"
 
     input:
@@ -19,10 +19,18 @@ process haplotypeCaller {
     """
     echo "Running HaplotypeCaller for Sample: ${bamFile}"
 
-    genomeFasta="\$(find -L . -name '*.fasta')"
+    if [[ -n params.genome_file ]]; then
+        genomeFasta=\$(basename ${params.genome_file})
+    else
+        genomeFasta=\$(find -L . -name '*.fasta')
+    fi
 
-    # Rename the dictionary file to the expected name
-    mv "\${genomeFasta}.dict" "\${genomeFasta%.*}.dict"
+    echo "Genome File: \${genomeFasta}"
+
+    # Rename the dictionary file to the expected name if it exists
+    if [[ -e "\${genomeFasta}.dict" ]]; then
+        mv "\${genomeFasta}.dict" "\${genomeFasta%.*}.dict"
+    fi
 
     outputVcf="\$(basename ${bamFile} _dedup.bam).vcf"
 
