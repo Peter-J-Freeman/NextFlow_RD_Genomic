@@ -6,8 +6,10 @@ process downsampleBam {
     label 'process_single'
     container 'variantvalidator/indexgenome:1.1.0'
 
+    tag "bamfile: $bamFile; fraction: $fraction"
+
     input:
-    file bamFile
+    tuple val(fraction), file(bamFile)
 
     output:
     tuple val(bamFile.baseName), file("*_downsampled_*.bam")
@@ -15,14 +17,14 @@ process downsampleBam {
     script:
     """
     echo "Running Downsampling"
-    fractions=(${params.fractions.join(' ')})
-    for fraction in "\${fractions[@]}"; do
-        outputBam="${bamFile.baseName}_downsampled_\${fraction//./}.bam"
-        picard DownsampleSam I=${bamFile} O="\${outputBam}" P="\${fraction}" QUIET=true VALIDATION_STRINGENCY=SILENT > "\${outputBam}.log" 2>&1
-    done
-    if [ -e "${bamFile}" ]; then
-        mv "${bamFile}" "${bamFile.baseName}_downsampled_100.bam"
-    fi
+
+    picard DownsampleSam \\
+    I=${bamFile} \\
+    O=${bamFile.baseName}_downsampled_${fraction}.bam \\
+    P=${fraction} \\
+    QUIET=true \\
+    VALIDATION_STRINGENCY=SILENT > ${bamFile.baseName}_downsampled_${fraction}.bam.log
+  
     echo "Downsampling complete"
     """
 }

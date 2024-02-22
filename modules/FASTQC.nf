@@ -8,10 +8,10 @@ process FASTQC {
     container 'variantvalidator/fastqc:0.12.1'
 
     // Add a tag to identify the process
-    tag "FASTQC on $sample_id"
+    tag "$sample_id"
 
     // Specify the output directory for the FASTQC results
-    publishDir(params.outdir, mode: "copy", mkdirs: true)
+    publishDir("$params.outdir/FASTQC", mode: "copy")
 
     input:
     tuple val(sample_id), path(reads)

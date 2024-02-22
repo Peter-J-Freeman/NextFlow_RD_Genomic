@@ -6,41 +6,38 @@ process haplotypeCaller {
     label 'process_medium'
     container 'variantvalidator/gatk4:4.3.0.0'
 
+    tag "$bamFile"
+
     input:
-    tuple val(sample_id), file(bamFiles)
-    path genomeFasta
+    tuple val(sample_id), file(bamFile), file(bamIndex)
     path indexFiles
-    tuple val(sample_id), file(bamIndexFiles)
 
     output:
-    tuple val(sample_id), file("${sample_id}_downsampled_*.vcf")
+    tuple val(sample_id), file("*.vcf")
 
     script:
     """
-    echo "Running HaplotypeCaller for Sample: ${sample_id}"
+    echo "Running HaplotypeCaller for Sample: ${bamFile}"
 
-    # Use the 'genomeFasta' variable passed as an input
-    genomeFasta="${genomeFasta}"
+    if [[ -n params.genome_file ]]; then
+        genomeFasta=\$(basename ${params.genome_file})
+    else
+        genomeFasta=\$(find -L . -name '*.fasta')
+    fi
 
-    # Define an array to store the input BAM files
-    inputBams=(${bamFiles})
+    echo "Genome File: \${genomeFasta}"
 
-    # Rename the dictionary file to the expected name
-    mv "\${genomeFasta}.dict" "\${genomeFasta%.*}.dict"
+    # Rename the dictionary file to the expected name if it exists
+    if [[ -e "\${genomeFasta}.dict" ]]; then
+        mv "\${genomeFasta}.dict" "\${genomeFasta%.*}.dict"
+    fi
 
-    # Loop through each input BAM file and call variants
-    echo "Calling VCFs for Sample: ${sample_id}..."
-    for inputBam in "\${inputBams[@]}"; do
-        outputVcf="\$(basename \${inputBam} _dedup.bam).vcf"
+    outputVcf="\$(basename ${bamFile} _dedup.bam).vcf"
 
-        # Use GATK HaplotypeCaller to call variants
-        gatk HaplotypeCaller -R \${genomeFasta} -I \${inputBam} -O "\${outputVcf}"
+    # Use GATK HaplotypeCaller to call variants
+    gatk HaplotypeCaller -R "\${genomeFasta}" -I ${bamFile} -O "\${outputVcf}"
 
-        echo "Sample: ${sample_id} VCF: \${outputVcf}"
-    done
-
-    # Move the dictionary file back to its original name
-    mv "\${genomeFasta%.*}.dict" "\${genomeFasta}.dict"
+    echo "Sample: ${sample_id} VCF: \${outputVcf}"
 
     echo "Variant Calling for Sample: ${sample_id} Complete"
     """
